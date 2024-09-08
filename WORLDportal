@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="https://zenai.biz">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dreamcore Hologram Portal to ZenAI World</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Arial', sans-serif;
+        }
+        .portal-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+        .portal {
+            width: 80vmin;
+            height: 80vmin;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: portalRotate 20s infinite linear;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+        .portal:hover {
+            transform: scale(1.05);
+        }
+        @keyframes portalRotate {
+            0% { transform: rotateY(0) rotateX(0); }
+            100% { transform: rotateY(360deg) rotateX(360deg); }
+        }
+        .portal-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid #00ffff;
+            box-shadow: 0 0 50px #00ffff, inset 0 0 50px #00ffff;
+            opacity: 0.8;
+            animation: pulseRing 4s infinite alternate;
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(0.95); opacity: 0.6; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
+        .portal-surface {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            top: 5%;
+            left: 5%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(0,255,255,0.2) 0%, rgba(0,0,0,0) 70%);
+            animation: portalSurface 8s infinite alternate;
+        }
+        @keyframes portalSurface {
+            0% { transform: scale(0.9); opacity: 0.5; }
+            100% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .portal-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3vmin;
+            color: #fff;
+            text-shadow: 0 0 10px #00ffff;
+            text-align: center;
+            pointer-events: none;
+        }
+        #zenLogo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40vmin;
+            height: 40vmin;
+            fill: none;
+            stroke: #00ffff;
+            stroke-width: 2;
+            animation: drawLogo 10s infinite linear;
+            pointer-events: none;
+        }
+        @keyframes drawLogo {
+            0% { stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+            50% { stroke-dasharray: 1000; stroke-dashoffset: 0; }
+            100% { stroke-dasharray: 1000; stroke-dashoffset: -1000; }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-container">
+        <div class="portal" onclick="window.location.href='https://zenai.biz'">
+            <div class="portal-ring"></div>
+            <div class="portal-surface"></div>
+            <div class="portal-text">Click to enter ZenAI World</div>
+        </div>
+        <svg id="zenLogo" viewBox="0 0 100 100">
+            <path d="M10,10 L90,10 L50,90 Z M10,90 L90,90 M50,10 L50,90"/>
+        </svg>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Three.js scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 5000;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for (let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 5;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.005,
+            color: 0x00ffff,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 3;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.x += 0.0005;
+            particlesMesh.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Dreamcore floating elements
+        function createDreamcoreElement() {
+            const element = document.createElement('div');
+            element.style.position = 'absolute';
+            element.style.width = `${Math.random() * 20 + 10}px`;
+            element.style.height = element.style.width;
+            element.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            element.style.borderRadius = '50%';
+            element.style.filter = 'blur(5px)';
+            element.style.opacity = Math.random() * 0.5 + 0.3;
+            element.style.left = `${Math.random() * 100}vw`;
+            element.style.top = `${Math.random() * 100}vh`;
+            element.style.pointerEvents = 'none';
+            document.body.appendChild(element);
+
+            const duration = Math.random() * 10 + 5;
+            const delay = Math.random() * 5;
+            element.animate([
+                { transform: 'translate(0, 0) scale(1)', opacity: element.style.opacity },
+                { transform: `translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px) scale(0)`, opacity: 0 }
+            ], {
+                duration: duration * 1000,
+                delay: delay * 1000,
+                iterations: Infinity,
+                direction: 'alternate',
+                easing: 'ease-in-out'
+            });
+        }
+
+        // Create multiple dreamcore elements
+        for (let i = 0; i < 30; i++) {
+            createDreamcoreElement();
+        }
+    </script>
+</body>
+</html>
