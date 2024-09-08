@@ -1,0 +1,525 @@
+<html><head><base href="https://interactive-ai-course.com/"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>AI Exploration for Teens: Week 1 - Interactive Course</title><script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script><style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+    
+    :root {
+        --primary-color: #4299e1;
+        --secondary-color: #48bb78;
+        --background-color: #1a202c;
+        --text-color: #ffffff;
+        --card-background: #2d3748;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 10px rgba(66, 153, 225, 0.5);
+    }
+
+    .slide {
+        display: none;
+        opacity: 0;
+        transform: translateX(50px);
+        transition: opacity 0.5s, transform 0.5s;
+    }
+
+    .slide.active {
+        display: block;
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .slide-content {
+        background-color: var(--card-background);
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .slide-content:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+        color: var(--primary-color);
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+    }
+
+    ul, ol {
+        margin-left: 25px;
+        margin-bottom: 20px;
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    .code-block {
+        background-color: #1a202c;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        overflow-x: auto;
+        border: 1px solid var(--primary-color);
+    }
+
+    .code-block code {
+        color: var(--secondary-color);
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .nav-button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: bold;
+    }
+
+    .nav-button:hover {
+        background-color: #3182ce;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-button:disabled {
+        background-color: #718096;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .interactive-element {
+        background-color: #2c5282;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        border: 2px solid var(--primary-color);
+    }
+
+    .api-key-input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid var(--primary-color);
+        border-radius: 4px;
+        background-color: #2d3748;
+        color: var(--text-color);
+    }
+
+    .submit-button {
+        background-color: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+    }
+
+    .submit-button:hover {
+        background-color: #38a169;
+    }
+
+    .result-display {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #2d3748;
+        border-radius: 4px;
+        border: 1px solid var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.5rem; }
+        .container { padding: 15px; }
+        .slide-content { padding: 20px; }
+    }
+
+    /* Animation keyframes */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .floating-icon {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    /* Progress bar styles */
+    .progress-container {
+        width: 100%;
+        background-color: #2d3748;
+        border-radius: 10px;
+        margin: 20px 0;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        width: 0;
+        height: 10px;
+        background-color: var(--primary-color);
+        transition: width 0.5s ease-in-out;
+    }
+
+    /* Code editor styles */
+    .code-editor {
+        border: 1px solid var(--primary-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .CodeMirror {
+        height: auto;
+        background-color: #1a202c !important;
+    }
+
+    .CodeMirror-gutters {
+        background-color: #2d3748 !important;
+        border-right: 1px solid var(--primary-color) !important;
+    }
+
+    .CodeMirror-linenumber {
+        color: #718096 !important;
+    }
+
+    .cm-s-default .cm-keyword { color: #f687b3; }
+    .cm-s-default .cm-string { color: #48bb78; }
+    .cm-s-default .cm-comment { color: #718096; }
+    .cm-s-default .cm-number { color: #ed8936; }
+    .cm-s-default .cm-variable { color: #4299e1; }
+</style></head><body>
+    <div class="container">
+        <h1 class="floating-icon">AI Exploration for Teens: Week 1</h1>
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <div id="slideContainer"></div>
+        <div class="navigation">
+            <button id="prevButton" class="nav-button" onclick="changeSlide(-1)">Previous</button>
+            <button id="nextButton" class="nav-button" onclick="changeSlide(1)">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = 'YOUR-OPENAI-API-KEY';
+        const slides = [
+            {
+                title: "Welcome to AI Exploration for Teens!",
+                content: `
+                    <p>Hello Future AI Innovators! 👋🚀</p>
+                    <p>Welcome to an exciting journey into the world of Artificial Intelligence. This week, we'll lay the foundation for your AI adventure!</p>
+                    <h3>What to expect:</h3>
+                    <ul>
+                        <li>Understand what AI is and its real-world applications</li>
+                        <li>Set up your AI playground with Google Colab</li>
+                        <li>Get hands-on experience with AI APIs</li>
+                        <li>Complete a mini-project to showcase your new skills</li>
+                    </ul>
+                    <p>Are you ready to become an AI explorer? Let's get started! 🎉</p>
+                `
+            },
+            {
+                title: "What is AI?",
+                content: `
+                    <p>Artificial Intelligence (AI) is like giving computers a brain to think and learn!</p>
+                    <h3>Key AI Concepts:</h3>
+                    <ul>
+                        <li><strong>Machine Learning:</strong> Teaching computers to learn from data</li>
+                        <li><strong>Neural Networks:</strong> AI systems inspired by the human brain</li>
+                        <li><strong>Natural Language Processing:</strong> Enabling computers to understand human language</li>
+                        <li><strong>Computer Vision:</strong> Helping machines interpret and understand visual information</li>
+                    </ul>
+                    <p>AI is transforming industries like:</p>
+                    <ul>
+                        <li>Healthcare 🏥</li>
+                        <li>Education 📚</li>
+                        <li>Transportation 🚗</li>
+                        <li>Entertainment 🎮</li>
+                    </ul>
+                    <p>Can you think of any AI applications you've encountered in your daily life?</p>
+                `
+            },
+            {
+                title: "Setting Up Your AI Playground",
+                content: `
+                    <p>Let's set up Google Colab, your free, cloud-based Python notebook for AI experiments!</p>
+                    <h3>Steps to get started:</h3>
+                    <ol>
+                        <li>Go to <a href="https://colab.research.google.com" target="_blank">Google Colab</a></li>
+                        <li>Sign in with your Google account (create one if needed)</li>
+                        <li>Click on "New Notebook" to start a new project</li>
+                    </ol>
+                    <p>Try your first Python command in Colab:</p>
+                    <div class="code-editor" id="firstCodeEditor"></div>
+                    <button class="submit-button" onclick="runFirstCode()">Run Code</button>
+                    <div id="firstCodeResult" class="result-display"></div>
+                    <p>Congratulations! You've just run your first piece of code in your AI playground! 🎊</p>
+                `
+            },
+            {
+                title: "Introduction to AI APIs",
+                content: `
+                    <p>AI APIs (Application Programming Interfaces) are like magic spells that give you access to powerful AI capabilities!</p>
+                    <h3>Popular AI APIs we'll explore:</h3>
+                    <ul>
+                        <li><strong>OpenAI API:</strong> For natural language tasks</li>
+                        <li><strong>Google Cloud Vision API:</strong> For image analysis</li>
+                    </ul>
+                    <p>To use these APIs, you'll need API keys. Let's set up your first API key for OpenAI:</p>
+                    <ol>
+                        <li>Visit <a href="https://beta.openai.com/signup/" target="_blank">OpenAI</a> and sign up (you might need a parent or teacher's help)</li>
+                        <li>Once logged in, go to the API section and create a new API key</li>
+                        <li>Copy your API key and keep it safe - never share it publicly!</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Your First AI Experiment: Text Generation",
+                content: `
+                    <p>Now that we have our API key, let's use AI to generate some creative text!</p>
+                    <p>We'll use GPT-4, one of the most advanced language models, to write a short story for us.</p>
+                    <div class="code-editor" id="gptCodeEditor"></div>
+                    <button class="submit-button" onclick="runGptCode()">Generate Story</button>
+                    <div id="gptCodeResult" class="result-display"></div>
+                    <p>Amazing! You've just used AI to create original content. Think about how this could be used in various applications, from writing assistance to creative storytelling!</p>
+                `
+            },
+            {
+                title: "Mini-Project: AI-Powered Study Buddy",
+                content: `
+                    <p>Let's put your new AI skills to use by creating a simple AI-powered study assistant!</p>
+                    <h3>Project Goal:</h3>
+                    <p>Create a program that takes a topic as input and generates study questions about that topic.</p>
+                    <div class="code-editor" id="projectCodeEditor"></div>
+                    <input type="text" id="topicInput" class="api-key-input" placeholder="Enter a study topic">
+                    <button class="submit-button" onclick="runProjectCode()">Generate Study Questions</button>
+                    <div id="projectCodeResult" class="result-display"></div>
+                    <h3>Challenge:</h3>
+                    <p>Can you modify the code to also generate answers to these questions? (Hint: You'll need to adjust the prompt!)</p>
+                `
+            },
+            {
+                title: "Week 1 Wrap-Up",
+                content: `
+                    <h3>Congratulations on completing Week 1 of AI Exploration! 🎉</h3>
+                    <p>Let's recap what you've learned:</p>
+                    <ul>
+                        <li>Understanding of AI and its real-world applications</li>
+                        <li>Setting up and using Google Colab</li>
+                        <li>Working with AI APIs (OpenAI's GPT-4)</li>
+                        <li>Creating a simple AI-powered application</li>
+                    </ul>
+                    <h3>Next Steps:</h3>
+                    <ol>
+                        <li>Experiment more with the OpenAI API - try different prompts and see what you can create!</li>
+                        <li>Think about how AI could help solve problems in your school or community</li>
+                        <li>Get ready for Week 2, where we'll dive into image recognition with Google Cloud Vision API!</li>
+                    </ol>
+                    <p>Remember, you're at the forefront of a technological revolution. The AI skills you're learning now could shape the future!</p>
+                    <p>Keep exploring, stay curious, and happy coding! 💻🚀</p>
+                `
+            }
+        ];
+
+        let currentSlide = 0;
+
+        function renderSlides() {
+            const slideContainer = document.getElementById('slideContainer');
+            slideContainer.innerHTML = slides.map((slide, index) => `
+                <div class="slide ${index === 0 ? 'active' : ''}" id="slide${index}">
+                    <div class="slide-content">
+                        <h2>${slide.title}</h2>
+                        ${slide.content}
+                    </div>
+                </div>
+            `).join('');
+
+            // Initialize CodeMirror instances
+            if (document.getElementById('firstCodeEditor')) {
+                createCodeMirror('firstCodeEditor', 'print("Hello, AI World!")');
+            }
+            if (document.getElementById('gptCodeEditor')) {
+                createCodeMirror('gptCodeEditor', `import openai
+
+openai.api_key = 'YOUR_API_KEY'  # Replace with your actual API key
+
+response = openai.ChatCompletion.create(
+  model="gpt-4",
+  messages=[
+    {"role": "user", "content": "Write a short story about a robot learning to paint:"}
+  ]
+)
+
+print(response.choices[0].message['content'].strip())`);
+            }
+            if (document.getElementById('projectCodeEditor')) {
+                createCodeMirror('projectCodeEditor', `import openai
+
+openai.api_key = 'YOUR_API_KEY'  # Replace with your actual API key
+
+def generate_study_questions(topic):
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "user", "content": f"Generate 5 study questions about {topic}:"}
+        ]
+    )
+    return response.choices[0].message['content'].strip()
+
+# This function will be called when you click the button
+def get_study_questions():
+    topic = document.getElementById('topicInput').value
+    questions = generate_study_questions(topic)
+    document.getElementById('projectCodeResult').innerText = questions`);
+            }
+        }
+
+        function createCodeMirror(elementId, defaultCode) {
+            CodeMirror(document.getElementById(elementId), {
+                value: defaultCode,
+                mode: "python",
+                theme: "default",
+                lineNumbers: true,
+                readOnly: false
+            });
+        }
+
+        async function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < slides.length) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                document.getElementById(`slide${newSlide}`).classList.add('active');
+                currentSlide = newSlide;
+                updateButtons();
+                animateSlide(direction);
+                updateProgressBar();
+            }
+        }
+
+        function updateButtons() {
+            document.getElementById('prevButton').disabled = currentSlide === 0;
+            document.getElementById('nextButton').disabled = currentSlide === slides.length - 1;
+        }
+
+        function animateSlide(direction) {
+            const slide = document.getElementById(`slide${currentSlide}`);
+            anime({
+                targets: slide,
+                translateX: [50 * direction, 0],
+                opacity: [0, 1],
+                duration: 500,
+                easing: 'easeOutQuad'
+            });
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        async function runFirstCode() {
+            const result = "Hello, AI World!";
+            document.getElementById('firstCodeResult').innerText = result;
+        }
+
+        async function runGptCode() {
+            const resultElement = document.getElementById('gptCodeResult');
+            resultElement.innerText = "Generating story...";
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-4",
+                        messages: [{role: "user", content: "Write a short story about a robot learning to paint:"}],
+                        max_tokens: 150
+                    })
+                });
+
+                const data = await response.json();
+                resultElement.innerText = data.choices[0].message.content.trim();
+            } catch (error) {
+                resultElement.innerText = "Error: " + error.message;
+            }
+        }
+
+        async function runProjectCode() {
+            const topic = document.getElementById('topicInput').value;
+            const resultElement = document.getElementById('projectCodeResult');
+
+            if (!topic) {
+                resultElement.innerText = "Please enter a study topic!";
+                return;
+            }
+
+            resultElement.innerText = `Generating study questions about ${topic}...`;
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-4",
+                        messages: [{role: "user", content: `Generate 5 study questions about ${topic}:`}],
+                        max_tokens: 150
+                    })
+                });
+
+                const data = await response.json();
+                resultElement.innerText = data.choices[0].message.content.trim();
+            } catch (error) {
+                resultElement.innerText = "Error: " + error.message;
+            }
+        }
+
+        renderSlides();
+        updateButtons();
+        updateProgressBar();
+    </script>
+</body></html>
